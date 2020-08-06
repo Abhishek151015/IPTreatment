@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iptreatmentdepl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: IPTreatment
+  template:
+    metadata:
+      labels:
+        app: IPTreatment
+    spec:
+      containers:
+      - name: iptreatment
+        image: iptreatmentmanagementcr.azurecr.io/iptreatmentrepos:latest
+        ports:
+        - containerPort: 8080
+      imagePullSecrets:
+      - name: iptreatmentsn
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iptreatment
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: IPTreatment
