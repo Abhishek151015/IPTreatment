@@ -12,12 +12,13 @@ using Newtonsoft.Json.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Security.Cryptography.X509Certificates;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace IPTreatment.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class FormulateTreatmentTimetableController : ControllerBase
     {
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(FormulateTreatmentTimetableController));
