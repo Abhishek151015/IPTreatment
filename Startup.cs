@@ -67,10 +67,10 @@ namespace IPTreatment
             app.UseHttpsRedirection();
             loggerFactory.AddLog4Net();
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
-            app.UseAuthentication();
+            
 
             app.UseEndpoints(endpoints =>
             {
