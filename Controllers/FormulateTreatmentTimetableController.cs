@@ -23,12 +23,15 @@ namespace IPTreatment.Controllers
     {
         static readonly log4net.ILog _log4net = log4net.LogManager.GetLogger(typeof(FormulateTreatmentTimetableController));
         public static List<TreatmentPlan> treatmentPlans = new List<TreatmentPlan>();
-
         public static List<PatientDetail> patientDetails = new List<PatientDetail>();
-     
-        TreatmentPlan t = new TreatmentPlan();
-
-     
+        TreatmentPlan treatmentPlan = new TreatmentPlan();
+        /// <summary>
+        /// 1.This method is taking values given by MVC client.
+        /// 2.Calling IPtreatmentOffering microservices.
+        /// 3.By checking condition returning the Treatment Plan to MVC client.
+        /// </summary>
+        /// <param name="details"></param>
+        /// <returns>Treatment Plan</returns>
         [HttpPost]
         public async Task<TreatmentPlan> Post(PatientDetail details)
         {
@@ -38,7 +41,8 @@ namespace IPTreatment.Controllers
             SpecialistDetail specialist = new SpecialistDetail();
             using (var client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://20.185.8.13/");
+                client.BaseAddress = new Uri("http://localhost:64484/");
+                //client.BaseAddress = new Uri("http://20.185.8.13/");
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 HttpResponseMessage response = new HttpResponseMessage();
@@ -49,11 +53,11 @@ namespace IPTreatment.Controllers
                 {
                     if (x.AilmentCategory == details.Ailment && x.TreatmentPackageName.ToString() == details.Packages.ToString())
                     {
-                        t.PackageName = x.TreatmentPackageName;
-                        t.TestDetails = x.TestDetails;
-                        t.Cost = x.Cost;
-                        t.CommencementDate = details.Date;
-                        t.EndDate = t.CommencementDate.AddDays(x.TreatmentDuration);
+                        treatmentPlan.PackageName = x.TreatmentPackageName;
+                        treatmentPlan.TestDetails = x.TestDetails;
+                        treatmentPlan.Cost = x.Cost;
+                        treatmentPlan.CommencementDate = details.Date;
+                        treatmentPlan.EndDate = treatmentPlan.CommencementDate.AddDays(x.TreatmentDuration);
                     }
                 }
 
@@ -65,18 +69,11 @@ namespace IPTreatment.Controllers
                 {
                     if (y.AreaOfExpertise == details.Ailment)
                     {
-                        t.Specialist = y.Name;
-                       
-
+                        treatmentPlan.Specialist = y.Name;
                     }
                 }
-            
-                return t;
-
-
+                return treatmentPlan;
             }
-
-
         }
     }
 
